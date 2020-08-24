@@ -1,0 +1,1 @@
+Running app using dagger-hilt as dependency injection
