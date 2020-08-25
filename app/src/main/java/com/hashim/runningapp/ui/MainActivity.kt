@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 2020/  8/ 24.  Created by Hashim Tahir
+ * Copyright (c) 2020/  8/ 25.  Created by Hashim Tahir
  */
 
-package com.hashim.runningapp
+package com.hashim.runningapp.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.hashim.runningapp.R
 import com.hashim.runningapp.db.RunDao
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
