@@ -6,14 +6,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_nav_graph.xml"
-    app:startDestination="@id/hRunFragment"
+    app:startDestination="@id/hSetupFragment"
     tools:ignore="UnusedNavigation">
 
     <fragment
         android:id="@+id/hRunFragment"
         android:name="com.hashim.runningapp.ui.fragments.RunFragment"
         android:label="RunFragment"
-        tools:layout="@layout/fragment_run" />
+        tools:layout="@layout/fragment_run" >
+        <action
+            android:id="@+id/action_hRunFragment_to_hTrackingFragment"
+            app:destination="@id/hTrackingFragment" />
+    </fragment>
     <fragment
         android:id="@+id/hStatsFragment"
         android:name="com.hashim.runningapp.ui.fragments.StatsFragment"
@@ -28,10 +32,18 @@
         android:id="@+id/hSetupFragment"
         android:name="com.hashim.runningapp.ui.fragments.SetupFragment"
         android:label="SetupFragment"
-        tools:layout="@layout/fragment_setup" />
+        tools:layout="@layout/fragment_setup" >
+        <action
+            android:id="@+id/action_hSetupFragment_to_hRunFragment"
+            app:destination="@id/hRunFragment" />
+    </fragment>
     <fragment
         android:id="@+id/hTrackingFragment"
         android:name="com.hashim.runningapp.ui.fragments.TrackingFragment"
         android:label="TrackingFragment"
-        tools:layout="@layout/fragment_tracking" />
+        tools:layout="@layout/fragment_tracking" >
+        <action
+            android:id="@+id/action_hTrackingFragment_to_hRunFragment"
+            app:destination="@id/hRunFragment" />
+    </fragment>
 </navigation>

@@ -1,8 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2020/  8/ 25.  Created by Hashim Tahir
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/hRunFragment"
+        android:icon="@drawable/ic_run"
+        android:title="@string/your_runs" />
+    <item
+        android:id="@+id/hStatsFragment"
+        android:icon="@drawable/ic_graph"
+        android:title="@string/statistics" />
+    <item
+        android:id="@+id/hSettingsFragment"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/settings" />
 
 </menu>

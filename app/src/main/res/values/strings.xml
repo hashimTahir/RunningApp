@@ -14,4 +14,8 @@
     </string-array>
     <string name="start_text">Start</string>
     <string name="stop_text">Stop</string>
+    <string name="your_runs">Your Runs</string>
+    <string name="statistics">Statistics</string>
+    <string name="your_runs">Your Runs</string>
+    <string name="settings">Settings</string>
 </resources>
