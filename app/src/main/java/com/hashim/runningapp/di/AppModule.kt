@@ -6,8 +6,8 @@ package com.hashim.runningapp.di
 
 import android.content.Context
 import androidx.room.Room
-import com.hashim.runningapp.repository.local.RunDao
-import com.hashim.runningapp.repository.local.RunningDatabase
+import com.hashim.runningapp.db.RunDao
+import com.hashim.runningapp.db.RunningDatabase
 import com.hashim.runningapp.utils.Constants
 import dagger.Module
 import dagger.Provides

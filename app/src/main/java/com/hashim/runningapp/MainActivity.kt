@@ -6,7 +6,7 @@ package com.hashim.runningapp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.hashim.runningapp.repository.local.RunDao
+import com.hashim.runningapp.db.RunDao
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject

@@ -2,7 +2,7 @@
  * Copyright (c) 2020/  8/ 25.  Created by Hashim Tahir
  */
 
-package com.hashim.runningapp.repository.local
+package com.hashim.runningapp.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
