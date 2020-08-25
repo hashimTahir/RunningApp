@@ -5,20 +5,18 @@
 package com.hashim.runningapp.ui
 
 import android.os.Bundle
-import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hashim.runningapp.R
 import com.hashim.runningapp.db.RunDao
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var hRunDao: RunDao
@@ -31,6 +29,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         Timber.d("Runn Dao ${hRunDao.hashCode()}")
 
+        setSupportActionBar(toolbar)
         hInitNavHostFragment()
 
     }
@@ -42,10 +41,17 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         hNavController = hNavHostFragment.navController
         hNavController.setGraph(R.navigation.home_nav_graph)
         NavigationUI.setupWithNavController(bottomNavigationView, hNavController)
-        bottomNavigationView.setOnNavigationItemSelectedListener(this)
+
+        hNavController.addOnDestinationChangedListener { _, destination, _ ->
+
+            when (destination.id) {
+                R.id.hSettingsFragment, R.id.hRunFragment, R.id.hStatsFragment ->
+                    bottomNavigationView.visibility = View.VISIBLE
+                else ->
+                    bottomNavigationView.visibility = View.GONE
+            }
+        }
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        TODO("Not yet implemented")
-    }
+
 }
