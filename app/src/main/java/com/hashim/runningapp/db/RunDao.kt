@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2020/  8/ 24.  Created by Hashim Tahir
+ * Copyright (c) 2020/  8/ 25.  Created by Hashim Tahir
  */
 
-package com.hashim.runningapp.repository.local
+package com.hashim.runningapp.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
