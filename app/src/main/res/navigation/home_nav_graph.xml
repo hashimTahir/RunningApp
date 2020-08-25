@@ -1,9 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2020/  8/ 25.  Created by Hashim Tahir
   -->
 
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/home_nav_graph.xml">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav_graph.xml"
+    app:startDestination="@id/hRunFragment"
+    tools:ignore="UnusedNavigation">
 
+    <fragment
+        android:id="@+id/hRunFragment"
+        android:name="com.hashim.runningapp.ui.fragments.RunFragment"
+        android:label="RunFragment" />
+    <fragment
+        android:id="@+id/hStatsFragment"
+        android:name="com.hashim.runningapp.ui.fragments.StatsFragment"
+        android:label="StatsFragment" />
+    <fragment
+        android:id="@+id/hSettingsFragment"
+        android:name="com.hashim.runningapp.ui.fragments.SettingsFragment"
+        android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/hSetupFragment"
+        android:name="com.hashim.runningapp.ui.fragments.SetupFragment"
+        android:label="SetupFragment" />
+    <fragment
+        android:id="@+id/hTrackingFragment"
+        android:name="com.hashim.runningapp.ui.fragments.TrackingFragment"
+        android:label="TrackingFragment" />
 </navigation>
