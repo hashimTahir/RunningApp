@@ -4,16 +4,13 @@
 
 package com.hashim.runningapp.ui.fragments
 
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.hashim.runningapp.R
-import com.hashim.runningapp.viewmodels.StatsViewModel
+import com.hashim.runningapp.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
-class StatsFragment : Fragment(R.layout.fragment_stats) {
-    private val hStatsViewModel: StatsViewModel by viewModels()
-
-
+open class BaseFragment(@LayoutRes layoutId: Int) : Fragment(layoutId) {
+    private val hMainViewModel: MainViewModel by viewModels()
 }

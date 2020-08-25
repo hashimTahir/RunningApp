@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import com.hashim.runningapp.R
 
 
-class SetupFragment : Fragment(R.layout.fragment_setup) {
+class SetupFragment : BaseFragment(R.layout.fragment_setup) {
 
 
 }

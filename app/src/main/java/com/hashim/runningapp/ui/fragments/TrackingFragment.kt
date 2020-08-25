@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import com.hashim.runningapp.R
 
 
-class TrackingFragment : Fragment(R.layout.fragment_tracking) {
+class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
 
 
 }

@@ -4,11 +4,10 @@
 
 package com.hashim.runningapp.ui.fragments
 
-import androidx.fragment.app.Fragment
 import com.hashim.runningapp.R
 
 
-class RunFragment : Fragment(R.layout.fragment_run) {
+class RunFragment : BaseFragment(R.layout.fragment_run) {
 
 
 }
