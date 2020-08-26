@@ -11,9 +11,9 @@ import androidx.annotation.RequiresApi
 
 class NotificationUtils {
     companion object {
-        public const val H_NOTIFICATION_CHANNEL_ID = "H_NOTIFICATION_CHANNEL_ID"
+        const val H_NOTIFICATION_CHANNEL_ID = "H_NOTIFICATION_CHANNEL_ID"
         private const val H_NOTIFICATION_CHANNEL_NAME = "Tracking"
-        private const val H_NOTIFICATION_ID = 1
+        const val H_NOTIFICATION_ID = 1
 
 
         @RequiresApi(Build.VERSION_CODES.O)

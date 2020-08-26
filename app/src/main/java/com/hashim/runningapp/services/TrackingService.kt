@@ -18,19 +18,23 @@ import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_PAUSE_SERVICE
 import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_START_OR_RESUME
 import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_STOP_SERVICE
 import com.hashim.runningapp.utils.NotificationUtils
+import com.hashim.runningapp.utils.NotificationUtils.Companion.H_NOTIFICATION_ID
 import timber.log.Timber
 
 class TrackingService : LifecycleService() {
-    override fun onCreate() {
-        super.onCreate()
-    }
-
+    var hIsFirstRun = true
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
             when (it.action) {
                 H_ACTION_STOP_SERVICE -> {
                     Timber.d("H_ACTION_STOP_SERVICE")
+                    if (hIsFirstRun) {
+                        hStartForeGroundService()
+                    } else {
+                        Timber.d("Already Running")
+
+                    }
                 }
                 H_ACTION_START_OR_RESUME -> {
                     Timber.d("H_ACTION_START_OR_RESUME")
@@ -60,7 +64,12 @@ class TrackingService : LifecycleService() {
             .setSmallIcon(R.drawable.ic_run)
             .setContentTitle(getString(R.string.app_name))
             .setContentText("00:00:00")
+            .setContentIntent(hGetPendingIntent())
 
+        startForeground(
+            H_NOTIFICATION_ID,
+            hNotificationBuilder.build()
+        )
     }
 
     private fun hGetPendingIntent(): PendingIntent {
