@@ -4,13 +4,16 @@
 
 package com.hashim.runningapp.services
 
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
-import android.os.IBinder
-import androidx.lifecycle.Lifecycle
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleService
 import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_PAUSE_SERVICE
 import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_START_OR_RESUME
 import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_STOP_SERVICE
+import com.hashim.runningapp.utils.NotificationUtils
 import timber.log.Timber
 
 class TrackingService : LifecycleService() {
@@ -37,15 +40,14 @@ class TrackingService : LifecycleService() {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+
+    private fun hStartForeGroundService() {
+        var hNotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationUtils.hCreateNotificationChannel(hNotificationManager)
+        }
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return super.onBind(intent)
-    }
-
-    override fun getLifecycle(): Lifecycle {
-        return super.getLifecycle()
-    }
 }
