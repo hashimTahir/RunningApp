@@ -29,15 +29,16 @@ class TrackingService : LifecycleService() {
             when (it.action) {
                 H_ACTION_STOP_SERVICE -> {
                     Timber.d("H_ACTION_STOP_SERVICE")
+
+                }
+                H_ACTION_START_OR_RESUME -> {
+                    Timber.d("H_ACTION_START_OR_RESUME")
                     if (hIsFirstRun) {
                         hStartForeGroundService()
                     } else {
                         Timber.d("Already Running")
 
                     }
-                }
-                H_ACTION_START_OR_RESUME -> {
-                    Timber.d("H_ACTION_START_OR_RESUME")
                 }
                 H_ACTION_PAUSE_SERVICE -> {
                     Timber.d("H_ACTION_PAUSE_SERVICE")
