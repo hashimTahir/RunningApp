@@ -5,12 +5,15 @@
 package com.hashim.runningapp.services
 
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import com.hashim.runningapp.R
+import com.hashim.runningapp.ui.MainActivity
+import com.hashim.runningapp.utils.Constants
 import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_PAUSE_SERVICE
 import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_START_OR_RESUME
 import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_STOP_SERVICE
@@ -58,5 +61,17 @@ class TrackingService : LifecycleService() {
             .setContentTitle(getString(R.string.app_name))
             .setContentText("00:00:00")
 
+    }
+
+    private fun hGetPendingIntent(): PendingIntent {
+        /*only update dont create a new every time*/
+        return PendingIntent.getActivity(
+            this,
+            0,
+            Intent(this, MainActivity::class.java)
+                .apply {
+                    setAction(Constants.H_ACTION_SHOW_TRACKING_FRAGMENT)
+                }, PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 }

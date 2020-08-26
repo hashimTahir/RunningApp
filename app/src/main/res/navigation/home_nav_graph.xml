@@ -9,6 +9,11 @@
     app:startDestination="@id/hSetupFragment"
     tools:ignore="UnusedNavigation">
 
+    <!--single top means dont launch new instance of the activity-->
+    <action
+        android:id="@+id/action_global_tracking_fragment"
+        app:launchSingleTop="true"
+        app:destination="@id/hTrackingFragment" />
     <fragment
         android:id="@+id/hRunFragment"
         android:name="com.hashim.runningapp.ui.fragments.RunFragment"

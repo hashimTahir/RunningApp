@@ -4,6 +4,7 @@
 
 package com.hashim.runningapp.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.hashim.runningapp.R
 import com.hashim.runningapp.db.RunDao
+import com.hashim.runningapp.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
@@ -28,12 +30,19 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
 
         Timber.d("Runn Dao ${hRunDao.hashCode()}")
 
-        setSupportActionBar(toolbar)
+        hNavigationToTrackingFragment(intent)
+
         hInitNavHostFragment()
 
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        hNavigationToTrackingFragment(intent)
     }
 
     private fun hInitNavHostFragment() {
@@ -52,6 +61,12 @@ class MainActivity : AppCompatActivity() {
                 else ->
                     bottomNavigationView.visibility = View.GONE
             }
+        }
+    }
+
+    private fun hNavigationToTrackingFragment(intent: Intent?) {
+        if (intent?.action.equals(Constants.H_ACTION_SHOW_TRACKING_FRAGMENT)) {
+            hNavController.navigate(R.id.action_global_tracking_fragment)
         }
     }
 
