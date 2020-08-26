@@ -11,6 +11,12 @@ class Constants {
         const val H_DATABASE_NAME = "RunningDatabase"
 
 
+        const val H_ACTION_START_OR_RESUME = "H_ACTION_START_OR_RESUME"
+        const val H_ACTION_PAUSE_SERVICE = "H_ACTION_PAUSE_SERVICE"
+        const val H_ACTION_STOP_SERVICE = "H_ACTION_STOP_SERVICE"
+
+
+
 
     }
 }
