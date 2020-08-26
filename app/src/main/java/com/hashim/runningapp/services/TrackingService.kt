@@ -8,8 +8,9 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
+import com.hashim.runningapp.R
 import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_PAUSE_SERVICE
 import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_START_OR_RESUME
 import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_STOP_SERVICE
@@ -48,6 +49,14 @@ class TrackingService : LifecycleService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationUtils.hCreateNotificationChannel(hNotificationManager)
         }
-    }
+        val hNotificationBuilder =
+            NotificationCompat.Builder(this, NotificationUtils.H_NOTIFICATION_CHANNEL_ID)
+        hNotificationBuilder
+            .setAutoCancel(false)
+            .setOngoing(true)
+            .setSmallIcon(R.drawable.ic_run)
+            .setContentTitle(getString(R.string.app_name))
+            .setContentText("00:00:00")
 
+    }
 }
