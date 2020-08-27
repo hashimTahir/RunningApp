@@ -42,7 +42,22 @@ class TrackingService : LifecycleService() {
     var hIsFirstRun = true
     lateinit var hFusedLocationProviderClient: FusedLocationProviderClient
 
-    /*Get continous location updates*/
+    companion object {
+        /*Observe these in the activity*/
+        val hIsTrackingUserMLD = MutableLiveData<Boolean>()
+        val hListOfCordinatesMLD = MutableLiveData<PolyLines>()
+        val hIsTrackingUserLD: LiveData<Boolean>
+            get() {
+                return hIsTrackingUserMLD
+            }
+        val hListOfCordinatesLD: LiveData<PolyLines>
+            get() {
+                return hListOfCordinatesMLD
+            }
+    }
+
+
+    /*Get continous location updates Annonymous callback defined globally*/
     val hLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
             super.onLocationResult(locationResult)
@@ -60,26 +75,15 @@ class TrackingService : LifecycleService() {
         }
     }
 
-    companion object {
-        /*Observe these in the activity*/
-        val hIsTrackingUserMLD = MutableLiveData<Boolean>()
-        val hListOfCordinatesMLD = MutableLiveData<PolyLines>()
-        val hIsTrackingUserLD: LiveData<Boolean>
-            get() {
-                return hIsTrackingUserMLD
-            }
-        val hListOfCordinatesLD: LiveData<PolyLines>
-            get() {
-                return hListOfCordinatesMLD
-            }
-    }
 
+    /*Initilize the MLD*/
     private fun hInitilizeMLD() {
         hIsTrackingUserMLD.value = false
         hListOfCordinatesMLD.value = mutableListOf()
 
     }
 
+    /*Add empty list if the location is stoped/ initilized */
     private fun hAddEmptyPolyLine() {
         hListOfCordinatesMLD.value?.apply {
             add(mutableListOf())
@@ -157,6 +161,7 @@ class TrackingService : LifecycleService() {
 
     }
 
+    /*Starts the serveice and add foreground notification */
     private fun hStartForeGroundService() {
         hAddEmptyPolyLine()
         hIsTrackingUserMLD.value = true
@@ -181,6 +186,8 @@ class TrackingService : LifecycleService() {
             hNotificationBuilder.build()
         )
     }
+
+    /*Creates the pending intent for the notification*/
 
     private fun hGetPendingIntent(): PendingIntent {
         /*only update dont create a new every time*/
