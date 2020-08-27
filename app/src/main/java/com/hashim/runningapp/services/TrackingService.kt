@@ -8,9 +8,12 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.location.Location
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.maps.model.LatLng
 import com.hashim.runningapp.R
 import com.hashim.runningapp.ui.MainActivity
 import com.hashim.runningapp.utils.Constants
@@ -21,8 +24,34 @@ import com.hashim.runningapp.utils.NotificationUtils
 import com.hashim.runningapp.utils.NotificationUtils.Companion.H_NOTIFICATION_ID
 import timber.log.Timber
 
+/*Just a name convention to use complex variables*/
+
+typealias PolyLine = MutableList<LatLng>
+typealias PolyLines = MutableList<PolyLine>
+
 class TrackingService : LifecycleService() {
     var hIsFirstRun = true
+
+    companion object {
+        /*Observe these in the activity*/
+        val hIsTrackingUserMLD = MutableLiveData<Boolean>()
+        val hListOfCordinatesMLD = MutableLiveData<PolyLines>()
+        val hIsTrackingUserLD = hIsTrackingUserMLD.value
+        val hListOfCordinatesLD = hListOfCordinatesMLD.value
+    }
+
+    private fun hInitilizeMLD() {
+        hIsTrackingUserMLD.value = false
+        hListOfCordinatesMLD.value = mutableListOf()
+
+    }
+
+    private fun hAddEmptyPolyLine() {
+        hListOfCordinatesMLD.value?.apply {
+            add(mutableListOf())
+            hListOfCordinatesMLD.postValue(this)
+        } ?: hListOfCordinatesMLD.postValue(mutableListOf(mutableListOf()))
+    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
@@ -49,8 +78,20 @@ class TrackingService : LifecycleService() {
         return super.onStartCommand(intent, flags, startId)
     }
 
+    /*This adds new lat lng at the end of the list*/
+    private fun hAddLatLngToPolyline(location: Location?) {
+        location?.let {
+            val hLatLng = LatLng(location.latitude, location.longitude)
+            hListOfCordinatesMLD.value?.apply {
+                last().add(hLatLng)
+                hListOfCordinatesMLD.postValue(this)
+            }
+        }
+
+    }
 
     private fun hStartForeGroundService() {
+        hAddEmptyPolyLine()
         var hNotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
