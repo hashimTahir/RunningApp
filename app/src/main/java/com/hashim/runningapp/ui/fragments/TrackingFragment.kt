@@ -27,6 +27,7 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
         mapView?.onCreate(savedInstanceState)
         mapView.getMapAsync {
             hGoogleMap = it
+            hAddAllPolyLines()
         }
         hSubscribeToServiceObservers()
     }
@@ -47,13 +48,13 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
     }
 
     private fun hSubscribeToServiceObservers() {
-        TrackingService.hIsTrackingUserMLD.observe(
+        TrackingService.hIsTrackingUserLD.observe(
             viewLifecycleOwner, {
                 hUpdateTracking(it)
 
             }
         )
-        TrackingService.hListOfCordinatesMLD.observe(
+        TrackingService.hListOfCordinatesLD.observe(
             viewLifecycleOwner, {
                 hPathPoints = it
                 hDrawLatestPolyLine()
@@ -112,7 +113,7 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
 
     private fun hSetupListeners() {
         btnToggleRun.setOnClickListener {
-            hSendCommandsToServie(Constants.H_ACTION_START_OR_RESUME)
+            hToggleRun()
         }
     }
 

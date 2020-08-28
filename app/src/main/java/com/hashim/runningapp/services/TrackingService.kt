@@ -44,8 +44,8 @@ class TrackingService : LifecycleService() {
 
     companion object {
         /*Observe these in the activity*/
-        val hIsTrackingUserMLD = MutableLiveData<Boolean>()
-        val hListOfCordinatesMLD = MutableLiveData<PolyLines>()
+        private val hIsTrackingUserMLD = MutableLiveData<Boolean>()
+        private val hListOfCordinatesMLD = MutableLiveData<PolyLines>()
         val hIsTrackingUserLD: LiveData<Boolean>
             get() {
                 return hIsTrackingUserMLD
@@ -136,12 +136,14 @@ class TrackingService : LifecycleService() {
                     if (hIsFirstRun) {
                         hStartForeGroundService()
                     } else {
+                        hStartForeGroundService()
                         Timber.d("Already Running")
 
                     }
                 }
                 H_ACTION_PAUSE_SERVICE -> {
                     Timber.d("H_ACTION_PAUSE_SERVICE")
+                    hPauseService()
                 }
             }
 
@@ -185,6 +187,10 @@ class TrackingService : LifecycleService() {
             H_NOTIFICATION_ID,
             hNotificationBuilder.build()
         )
+    }
+
+    private fun hPauseService() {
+        hIsTrackingUserMLD.postValue(false)
     }
 
     /*Creates the pending intent for the notification*/
