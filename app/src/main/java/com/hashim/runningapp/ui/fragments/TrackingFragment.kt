@@ -8,7 +8,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.PolylineOptions
 import com.hashim.runningapp.R
+import com.hashim.runningapp.services.PolyLine
 import com.hashim.runningapp.services.TrackingService
 import com.hashim.runningapp.utils.Constants
 import kotlinx.android.synthetic.main.fragment_tracking.*
@@ -16,6 +18,8 @@ import kotlinx.android.synthetic.main.fragment_tracking.*
 
 class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
     private var hGoogleMap: GoogleMap? = null
+    private var hIsTracking = false
+    private var hPathPoints = mutableListOf<PolyLine>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         hSetupListeners()
@@ -23,6 +27,21 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
         mapView.getMapAsync {
             hGoogleMap = it
         }
+    }
+
+    /*Connect last 2 points of pollyline list*/
+    private fun hDrawPolyLine() {
+        if (hPathPoints.isNotEmpty() && hPathPoints.last().size > 1) {
+            val hPreLastLatLng = hPathPoints.last()[hPathPoints.last().size - 2]
+            val hLastLatLng = hPathPoints.last().last()
+            val hPolylineOptions = PolylineOptions()
+                .color(Constants.H_POLYLINE_COLOR)
+                .width(Constants.H_POLYLINE_WIDTH)
+                .add(hPreLastLatLng)
+                .add(hLastLatLng)
+            hGoogleMap?.addPolyline(hPolylineOptions)
+        }
+
     }
 
     private fun hSetupListeners() {

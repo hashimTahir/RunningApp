@@ -4,9 +4,11 @@
 
 package com.hashim.runningapp.utils
 
+import android.graphics.Color
+
 class Constants {
     companion object {
-        val H_LOACTION_RC=23
+        val H_LOACTION_RC = 23
         const val hTag = "hashimTimberTags %s"
         const val H_DATABASE_NAME = "RunningDatabase"
 
@@ -21,6 +23,8 @@ class Constants {
         const val H_ACTION_SHOW_TRACKING_FRAGMENT = "H_ACTION_SHOW_TRACKING_FRAGMENT"
 
 
+        const val H_POLYLINE_COLOR = Color.RED
+        const val H_POLYLINE_WIDTH = 8F
 
 
     }
