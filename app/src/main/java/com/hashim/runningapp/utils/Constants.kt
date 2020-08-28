@@ -25,6 +25,7 @@ class Constants {
 
         const val H_POLYLINE_COLOR = Color.RED
         const val H_POLYLINE_WIDTH = 8F
+        const val H_CAMERA_ZOOM = 15F
 
 
     }

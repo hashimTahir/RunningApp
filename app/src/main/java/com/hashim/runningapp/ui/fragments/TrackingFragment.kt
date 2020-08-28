@@ -7,6 +7,7 @@ package com.hashim.runningapp.ui.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.PolylineOptions
 import com.hashim.runningapp.R
@@ -27,10 +28,11 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
         mapView.getMapAsync {
             hGoogleMap = it
         }
+        hSubscribeToServiceObservers()
     }
 
     /*Connect last 2 points of pollyline list*/
-    private fun hDrawPolyLine() {
+    private fun hDrawLatestPolyLine() {
         if (hPathPoints.isNotEmpty() && hPathPoints.last().size > 1) {
             val hPreLastLatLng = hPathPoints.last()[hPathPoints.last().size - 2]
             val hLastLatLng = hPathPoints.last().last()
@@ -39,6 +41,70 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
                 .width(Constants.H_POLYLINE_WIDTH)
                 .add(hPreLastLatLng)
                 .add(hLastLatLng)
+            hGoogleMap?.addPolyline(hPolylineOptions)
+        }
+
+    }
+
+    private fun hSubscribeToServiceObservers() {
+        TrackingService.hIsTrackingUserMLD.observe(
+            viewLifecycleOwner, {
+                hUpdateTracking(it)
+
+            }
+        )
+        TrackingService.hListOfCordinatesMLD.observe(
+            viewLifecycleOwner, {
+                hPathPoints = it
+                hDrawLatestPolyLine()
+                hMoveCameraToUser()
+            }
+        )
+    }
+
+    /*Turn service on and off*/
+    private fun hToggleRun() {
+        if (hIsTracking) {
+            hSendCommandsToServie(Constants.H_ACTION_PAUSE_SERVICE)
+        } else {
+            hSendCommandsToServie(Constants.H_ACTION_START_OR_RESUME)
+        }
+    }
+
+    /*Observe the values from the server and update the uI*/
+
+    private fun hUpdateTracking(isTracking: Boolean) {
+        this.hIsTracking = isTracking
+        if (!isTracking) {
+            btnToggleRun.text = "Start"
+            btnFinishRun.visibility = View.VISIBLE
+        } else {
+            btnToggleRun.text = "Stop"
+            btnFinishRun.visibility = View.GONE
+        }
+
+    }
+
+    private fun hMoveCameraToUser() {
+        if (hPathPoints.isNotEmpty() && hPathPoints.last().isNotEmpty()) {
+            hGoogleMap?.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    hPathPoints.last().last(),
+                    Constants.H_CAMERA_ZOOM
+                )
+            )
+        }
+    }
+
+    /*When activity/fragment is recreated re draw the path.*/
+    private fun hAddAllPolyLines() {
+        for (polyLine in hPathPoints) {
+
+            val hPolylineOptions = PolylineOptions()
+                .color(Constants.H_POLYLINE_COLOR)
+                .width(Constants.H_POLYLINE_WIDTH)
+                .addAll(polyLine)
+
             hGoogleMap?.addPolyline(hPolylineOptions)
         }
 
