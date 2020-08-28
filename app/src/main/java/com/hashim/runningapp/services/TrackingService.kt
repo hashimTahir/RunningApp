@@ -31,6 +31,9 @@ import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_STOP_SERVICE
 import com.hashim.runningapp.utils.NotificationUtils
 import com.hashim.runningapp.utils.NotificationUtils.Companion.H_NOTIFICATION_ID
 import com.hashim.runningapp.utils.TrackingUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /*Just a name convention to use complex variables*/
@@ -42,10 +45,17 @@ class TrackingService : LifecycleService() {
     var hIsFirstRun = true
     lateinit var hFusedLocationProviderClient: FusedLocationProviderClient
 
+    private val hRunningTimeinSecondsMLD = MutableLiveData<Long>()
+    val hRunningTimeinSecondsLD: LiveData<Long>
+        get() {
+            return hRunningTimeinSecondsMLD
+        }
+
     companion object {
         /*Observe these in the activity*/
         private val hIsTrackingUserMLD = MutableLiveData<Boolean>()
         private val hListOfCordinatesMLD = MutableLiveData<PolyLines>()
+        private val hRunningTimeInMillisMLD = MutableLiveData<Long>()
         val hIsTrackingUserLD: LiveData<Boolean>
             get() {
                 return hIsTrackingUserMLD
@@ -54,6 +64,12 @@ class TrackingService : LifecycleService() {
             get() {
                 return hListOfCordinatesMLD
             }
+        val hRunningTimeInMillisLD: LiveData<Long>
+            get() {
+                return hRunningTimeInMillisMLD
+            }
+
+
     }
 
 
@@ -72,6 +88,24 @@ class TrackingService : LifecycleService() {
                     }
                 }
             }
+        }
+    }
+
+
+    /*To be completed.*/
+
+    private var hIsTimerEnabled = false
+    private var hLapTime = 0L
+    private var hTotalTime = 0L
+    private var hTimeStarted = 0L
+    private var hLastSecondTimeStamp = 0L
+    private fun hStartTimer() {
+        hAddEmptyPolyLine()
+        hIsTrackingUserMLD.value = true
+        hTimeStarted = System.currentTimeMillis()
+        hIsTimerEnabled = true
+        CoroutineScope(Dispatchers.Main).launch {
+
         }
     }
 
@@ -165,7 +199,6 @@ class TrackingService : LifecycleService() {
 
     /*Starts the serveice and add foreground notification */
     private fun hStartForeGroundService() {
-        hAddEmptyPolyLine()
         hIsTrackingUserMLD.value = true
         var hNotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
