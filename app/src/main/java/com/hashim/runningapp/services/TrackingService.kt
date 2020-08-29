@@ -33,6 +33,7 @@ import com.hashim.runningapp.utils.NotificationUtils.Companion.H_NOTIFICATION_ID
 import com.hashim.runningapp.utils.TrackingUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -92,8 +93,6 @@ class TrackingService : LifecycleService() {
     }
 
 
-    /*To be completed.*/
-
     private var hIsTimerEnabled = false
     private var hLapTime = 0L
     private var hTotalTime = 0L
@@ -105,6 +104,22 @@ class TrackingService : LifecycleService() {
         hTimeStarted = System.currentTimeMillis()
         hIsTimerEnabled = true
         CoroutineScope(Dispatchers.Main).launch {
+            while (hIsTrackingUserLD.value!!) {
+                /*Time difference between now and time started.*/
+                hLapTime = System.currentTimeMillis() - hTimeStarted
+
+
+                /*Used for updating fragment timer*/
+                hRunningTimeInMillisMLD.postValue(hTotalTime + hLapTime)
+
+                /*Used for updating notificaiton*/
+                if (hRunningTimeinSecondsMLD.value!! >= hLastSecondTimeStamp + 1000L) {
+                    hRunningTimeinSecondsMLD.postValue(hRunningTimeinSecondsMLD.value!! + 1)
+                    hLastSecondTimeStamp += 1000L
+                }
+                delay(Constants.H_DELAY_INTERVAL)
+            }
+            hTotalTime += hLapTime
 
         }
     }
@@ -170,7 +185,7 @@ class TrackingService : LifecycleService() {
                     if (hIsFirstRun) {
                         hStartForeGroundService()
                     } else {
-                        hStartForeGroundService()
+                        hStartTimer()
                         Timber.d("Already Running")
 
                     }
@@ -199,6 +214,7 @@ class TrackingService : LifecycleService() {
 
     /*Starts the serveice and add foreground notification */
     private fun hStartForeGroundService() {
+        hStartTimer()
         hIsTrackingUserMLD.value = true
         var hNotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -224,6 +240,7 @@ class TrackingService : LifecycleService() {
 
     private fun hPauseService() {
         hIsTrackingUserMLD.postValue(false)
+        hIsTimerEnabled = false
     }
 
     /*Creates the pending intent for the notification*/
