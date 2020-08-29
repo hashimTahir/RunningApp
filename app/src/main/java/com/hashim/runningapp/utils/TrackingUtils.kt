@@ -8,6 +8,7 @@ import android.Manifest
 import android.content.Context
 import android.os.Build
 import pub.devrel.easypermissions.EasyPermissions
+import java.util.concurrent.TimeUnit
 
 object TrackingUtils {
     fun hHasLocationPermissions(context: Context) =
@@ -25,4 +26,30 @@ object TrackingUtils {
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION,
             )
         }
+
+    fun hGetFormattedTime(time: Long, includeMillis: Boolean = false): String {
+        var hTimeInMillis = time
+
+        val hHours = TimeUnit.MILLISECONDS.toHours(hTimeInMillis)
+        hTimeInMillis -= TimeUnit.HOURS.toMillis(hHours)
+
+        val hMinutes = TimeUnit.MILLISECONDS.toMinutes(hTimeInMillis)
+        hTimeInMillis -= TimeUnit.MINUTES.toMillis(hMinutes)
+
+        val hSeconds = TimeUnit.MILLISECONDS.toSeconds(hTimeInMillis)
+
+        if (!includeMillis) {
+            return "${if (hHours < 10) "0" else ""}$hHours:" +
+                    "${if (hMinutes < 10) "0" else ""}$hMinutes:" +
+                    "${if (hSeconds < 10) "0" else ""}$hSeconds"
+
+        }
+
+        hTimeInMillis -= TimeUnit.SECONDS.toMillis(hSeconds)
+        hTimeInMillis /= 10
+        return "${if (hHours < 10) "0" else ""}$hHours:" +
+                "${if (hMinutes < 10) "0" else ""}$hMinutes:" +
+                "${if (hSeconds < 10) "0" else ""}$hSeconds:" +
+                "${if (hTimeInMillis < 10) "0" else ""}$hTimeInMillis"
+    }
 }
