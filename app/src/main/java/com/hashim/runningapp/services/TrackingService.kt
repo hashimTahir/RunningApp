@@ -129,6 +129,8 @@ class TrackingService : LifecycleService() {
     private fun hInitilizeMLD() {
         hIsTrackingUserMLD.value = false
         hListOfCordinatesMLD.value = mutableListOf()
+        hRunningTimeinSecondsMLD.value = 0L
+        hRunningTimeInMillisMLD.value = 0L
 
     }
 

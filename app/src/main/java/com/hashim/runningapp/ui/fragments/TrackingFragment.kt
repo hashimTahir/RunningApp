@@ -14,6 +14,7 @@ import com.hashim.runningapp.R
 import com.hashim.runningapp.services.PolyLine
 import com.hashim.runningapp.services.TrackingService
 import com.hashim.runningapp.utils.Constants
+import com.hashim.runningapp.utils.TrackingUtils
 import kotlinx.android.synthetic.main.fragment_tracking.*
 
 
@@ -21,6 +22,8 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
     private var hGoogleMap: GoogleMap? = null
     private var hIsTracking = false
     private var hPathPoints = mutableListOf<PolyLine>()
+    private var hCurrentTimeInMills = 0L
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         hSetupListeners()
@@ -61,6 +64,13 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
                 hMoveCameraToUser()
             }
         )
+
+        TrackingService.hRunningTimeInMillisLD.observe(viewLifecycleOwner, {
+            hCurrentTimeInMills = it
+            val hFormatedTime = TrackingUtils.hGetFormattedTime(hCurrentTimeInMills, true)
+            tvTimer.text = hFormatedTime
+
+        })
     }
 
     /*Turn service on and off*/
