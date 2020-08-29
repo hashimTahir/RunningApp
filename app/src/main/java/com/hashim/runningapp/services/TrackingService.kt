@@ -46,11 +46,11 @@ typealias PolyLines = MutableList<PolyLine>
 
 
 @AndroidEntryPoint
-class TrackingService(
-    @Inject
-    val hFusedLocationProviderClient: FusedLocationProviderClient
-) : LifecycleService() {
+class TrackingService : LifecycleService() {
     var hIsFirstRun = true
+
+    @Inject
+    lateinit var hFusedLocationProviderClient: FusedLocationProviderClient
 
     @Inject
     lateinit var hNotificationBuilder: NotificationCompat.Builder
@@ -59,11 +59,6 @@ class TrackingService(
     lateinit var hCurrentNotification: NotificationCompat.Builder
 
     private val hRunningTimeinSecondsMLD = MutableLiveData<Long>()
-    val hRunningTimeinSecondsLD: LiveData<Long>
-        get() {
-            return hRunningTimeinSecondsMLD
-        }
-
     companion object {
         /*Observe these in the activity*/
         private val hIsTrackingUserMLD = MutableLiveData<Boolean>()
@@ -94,10 +89,6 @@ class TrackingService(
                 locationResult?.locations?.let { locationsList ->
                     for (location in locationsList) {
                         hAddLatLngToPolyline(location)
-                        Timber.d(
-                            "New Location:  latitude-> %s   Longitude-> %s",
-                            location.latitude, location.longitude
-                        )
                     }
                 }
             }
@@ -125,7 +116,7 @@ class TrackingService(
                 hRunningTimeInMillisMLD.postValue(hTotalTime + hLapTime)
 
                 /*Used for updating notificaiton*/
-                if (hRunningTimeinSecondsMLD.value!! >= hLastSecondTimeStamp + 1000L) {
+                if (hRunningTimeInMillisLD.value!! >= hLastSecondTimeStamp + 1000L) {
                     hRunningTimeinSecondsMLD.postValue(hRunningTimeinSecondsMLD.value!! + 1)
                     hLastSecondTimeStamp += 1000L
                 }
@@ -288,6 +279,7 @@ class TrackingService(
             val hNotifcation = hCurrentNotification
                 .setContentText(TrackingUtils.hGetFormattedTime(it * 1000L))
 
+            Timber.d("hRunning TimeINSeconds Mld %s", it)
             hNotificationManager.notify(H_NOTIFICATION_ID, hNotifcation.build())
         })
     }
