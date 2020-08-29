@@ -7,6 +7,7 @@ package com.hashim.runningapp.services
 import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
 import android.location.Location
@@ -23,7 +24,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
 import com.hashim.runningapp.R
-import com.hashim.runningapp.ui.MainActivity
 import com.hashim.runningapp.utils.Constants
 import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_PAUSE_SERVICE
 import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_START_OR_RESUME
@@ -37,7 +37,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.lang.StringBuilder
 import javax.inject.Inject
 
 /*Just a name convention to use complex variables*/
@@ -47,14 +46,17 @@ typealias PolyLines = MutableList<PolyLine>
 
 
 @AndroidEntryPoint
-class TrackingService : LifecycleService() {
+class TrackingService(
+    @Inject
+    val hFusedLocationProviderClient: FusedLocationProviderClient
+) : LifecycleService() {
     var hIsFirstRun = true
 
     @Inject
-    lateinit var hFusedLocationProviderClient: FusedLocationProviderClient
-
-    @Inject
     lateinit var hNotificationBuilder: NotificationCompat.Builder
+
+    /*To Updated the already showing notification, using the same id and updaing the content*/
+    lateinit var hCurrentNotification: NotificationCompat.Builder
 
     private val hRunningTimeinSecondsMLD = MutableLiveData<Long>()
     val hRunningTimeinSecondsLD: LiveData<Long>
@@ -152,6 +154,47 @@ class TrackingService : LifecycleService() {
         } ?: hListOfCordinatesMLD.postValue(mutableListOf(mutableListOf()))
     }
 
+    private fun hUpdateNotificaiton(istracking: Boolean) {
+        val hNotificationText = if (istracking) "Pause" else "Resume"
+        val hPendingIntent = if (istracking) {
+            val hPauseIntent = Intent(this, TrackingService::class.java)
+                .apply {
+                    setAction(Constants.H_ACTION_PAUSE_SERVICE)
+                }
+            PendingIntent.getService(
+                this,
+                1,
+                hPauseIntent,
+                FLAG_UPDATE_CURRENT
+            )
+        } else {
+            val hResumeIntent = Intent(this, TrackingService::class.java)
+                .apply {
+                    setAction(Constants.H_ACTION_START_OR_RESUME)
+                }
+            PendingIntent.getService(
+                this,
+                2,
+                hResumeIntent,
+                FLAG_UPDATE_CURRENT
+            )
+        }
+        val hNotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        hCurrentNotification.javaClass.getDeclaredField("mActions")
+            .apply {
+                isAccessible = true
+                set(hCurrentNotification, ArrayList<NotificationCompat.Action>())
+            }
+        hCurrentNotification = hNotificationBuilder
+            .addAction(R.drawable.ic_add_black, hNotificationText, hPendingIntent)
+
+        hNotificationManager.notify(H_NOTIFICATION_ID, hCurrentNotification.build())
+
+    }
+
+
     /*Start or stop the location tracking*/
     @SuppressLint("MissingPermission")
     private fun hUpdateTracking(istracking: Boolean) {
@@ -179,10 +222,12 @@ class TrackingService : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
         hInitilizeMLD()
-        hFusedLocationProviderClient = FusedLocationProviderClient(this)
         hIsTrackingUserLD.observe(this, Observer {
             hUpdateTracking(it)
+            hUpdateNotificaiton(it)
         })
+
+        hCurrentNotification = hNotificationBuilder
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -239,6 +284,12 @@ class TrackingService : LifecycleService() {
             H_NOTIFICATION_ID,
             hNotificationBuilder.build()
         )
+        hRunningTimeinSecondsMLD.observe(this, {
+            val hNotifcation = hCurrentNotification
+                .setContentText(TrackingUtils.hGetFormattedTime(it * 1000L))
+
+            hNotificationManager.notify(H_NOTIFICATION_ID, hNotifcation.build())
+        })
     }
 
     private fun hPauseService() {
