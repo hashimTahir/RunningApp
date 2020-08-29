@@ -31,20 +31,30 @@ import com.hashim.runningapp.utils.Constants.Companion.H_ACTION_STOP_SERVICE
 import com.hashim.runningapp.utils.NotificationUtils
 import com.hashim.runningapp.utils.NotificationUtils.Companion.H_NOTIFICATION_ID
 import com.hashim.runningapp.utils.TrackingUtils
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.StringBuilder
+import javax.inject.Inject
 
 /*Just a name convention to use complex variables*/
 
 typealias PolyLine = MutableList<LatLng>
 typealias PolyLines = MutableList<PolyLine>
 
+
+@AndroidEntryPoint
 class TrackingService : LifecycleService() {
     var hIsFirstRun = true
+
+    @Inject
     lateinit var hFusedLocationProviderClient: FusedLocationProviderClient
+
+    @Inject
+    lateinit var hNotificationBuilder: NotificationCompat.Builder
 
     private val hRunningTimeinSecondsMLD = MutableLiveData<Long>()
     val hRunningTimeinSecondsLD: LiveData<Long>
@@ -224,15 +234,6 @@ class TrackingService : LifecycleService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationUtils.hCreateNotificationChannel(hNotificationManager)
         }
-        val hNotificationBuilder =
-            NotificationCompat.Builder(this, NotificationUtils.H_NOTIFICATION_CHANNEL_ID)
-        hNotificationBuilder
-            .setAutoCancel(false)
-            .setOngoing(true)
-            .setSmallIcon(R.drawable.ic_run)
-            .setContentTitle(getString(R.string.app_name))
-            .setContentText("00:00:00")
-            .setContentIntent(hGetPendingIntent())
 
         startForeground(
             H_NOTIFICATION_ID,
@@ -245,17 +246,5 @@ class TrackingService : LifecycleService() {
         hIsTimerEnabled = false
     }
 
-    /*Creates the pending intent for the notification*/
 
-    private fun hGetPendingIntent(): PendingIntent {
-        /*only update dont create a new every time*/
-        return PendingIntent.getActivity(
-            this,
-            0,
-            Intent(this, MainActivity::class.java)
-                .apply {
-                    setAction(Constants.H_ACTION_SHOW_TRACKING_FRAGMENT)
-                }, PendingIntent.FLAG_UPDATE_CURRENT
-        )
-    }
 }
