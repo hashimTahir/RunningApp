@@ -25,6 +25,7 @@ import com.hashim.runningapp.services.TrackingService
 import com.hashim.runningapp.utils.Constants
 import com.hashim.runningapp.utils.TrackingUtils
 import kotlinx.android.synthetic.main.fragment_tracking.*
+import timber.log.Timber
 import java.util.*
 import kotlin.math.round
 
@@ -54,6 +55,7 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
 
     /*Connect last 2 points of pollyline list*/
     private fun hDrawLatestPolyLine() {
+        Timber.d("Drawing Now")
         if (hPathPoints.isNotEmpty() && hPathPoints.last().size > 1) {
             val hPreLastLatLng = hPathPoints.last()[hPathPoints.last().size - 2]
             val hLastLatLng = hPathPoints.last().last()

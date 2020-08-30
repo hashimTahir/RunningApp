@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2020/  8/ 25.  Created by Hashim Tahir
+ * Copyright (c) 2020/  8/ 30.  Created by Hashim Tahir
  */
 
-package com.hashim.runningapp.ui.fragments
+package com.hashim.runningapp.ui.fragments.run
 
 import android.Manifest
 import android.os.Build
@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.hashim.runningapp.R
+import com.hashim.runningapp.ui.fragments.BaseFragment
 import com.hashim.runningapp.utils.Constants
 import com.hashim.runningapp.utils.TrackingUtils
 import kotlinx.android.synthetic.main.fragment_run.*
