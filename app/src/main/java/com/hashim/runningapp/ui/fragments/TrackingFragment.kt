@@ -6,10 +6,16 @@ package com.hashim.runningapp.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import androidx.core.view.get
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hashim.runningapp.R
 import com.hashim.runningapp.services.PolyLine
 import com.hashim.runningapp.services.TrackingService
@@ -24,9 +30,14 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
     private var hPathPoints = mutableListOf<PolyLine>()
     private var hCurrentTimeInMills = 0L
 
+    private var hMenu: Menu? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         hSetupListeners()
+
+        setHasOptionsMenu(true)
+
         mapView?.onCreate(savedInstanceState)
         mapView.getMapAsync {
             hGoogleMap = it
@@ -168,4 +179,47 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.toolbar_tracking_menu, menu)
+        hMenu = menu
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.hCancelTracking -> hShowAlertDialog()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        if (hCurrentTimeInMills > 0) {
+            hMenu?.get(0)?.isVisible = true
+        }
+    }
+
+    private fun hShowAlertDialog() {
+        val hDialog = MaterialAlertDialogBuilder(
+            requireContext(),
+            R.style.AlertDialogTheme
+        )
+            .setTitle("Cancel the run")
+            .setMessage("Are you sure to cancel the current run")
+            .setIcon(R.drawable.ic_delete)
+            .setPositiveButton("yes") { _, _ ->
+                hStopRun()
+            }
+            .setNegativeButton("No") { dialoginterface, _ ->
+                dialoginterface.cancel()
+
+            }
+            .create()
+            .show()
+    }
+
+    private fun hStopRun() {
+        hSendCommandsToServie(Constants.H_ACTION_STOP_SERVICE)
+        findNavController().navigate(R.id.action_hTrackingFragment_to_hRunFragment)
+    }
 }
