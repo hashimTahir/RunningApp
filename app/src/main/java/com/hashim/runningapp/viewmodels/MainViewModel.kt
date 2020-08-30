@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hashim.runningapp.db.Run
 import com.hashim.runningapp.repository.local.LocalRepo
+import com.hashim.runningapp.utils.SortType
 import com.hashim.runningapp.utils.SortType.*
 import kotlinx.coroutines.launch
 
@@ -23,47 +24,47 @@ class MainViewModel @ViewModelInject constructor(
     private val hRunsSortedByTimeinMillis = hLocalRepo.hGetAllRunsSortedByTimeInMills()
     private val hRunsSortedByAverageSpeed = hLocalRepo.hGetAllRunsSortedByAverageSpeed()
 
-    private val hSortType = H_DATE
+     var hSortType = H_DATE
 
     /*Mediator live data allows to merge several live datas togather
     * also allows to write custom logic to emit what data is to be emitted.*/
-    val hMediatorLiveData = MediatorLiveData<List<Run>>()
+    val hRunsMediatorLiveData = MediatorLiveData<List<Run>>()
 
     init {
         /*For any change in the source change lambda is called*/
-        hMediatorLiveData.addSource(hRunsSortedByDate) { result ->
+        hRunsMediatorLiveData.addSource(hRunsSortedByDate) { result ->
             if (hSortType.equals(H_DATE)) {
                 result?.let {
-                    hMediatorLiveData.value = result
+                    hRunsMediatorLiveData.value = result
                 }
             }
         }
 
-        hMediatorLiveData.addSource(hRunsSortedByDistance) { result ->
+        hRunsMediatorLiveData.addSource(hRunsSortedByDistance) { result ->
             if (hSortType.equals(H_DISTANCE)) {
                 result?.let {
-                    hMediatorLiveData.value = result
+                    hRunsMediatorLiveData.value = result
                 }
             }
         }
-        hMediatorLiveData.addSource(hRunsSortedByCaloriesBurnt) { result ->
+        hRunsMediatorLiveData.addSource(hRunsSortedByCaloriesBurnt) { result ->
             if (hSortType.equals(H_CALORIES_BURNED)) {
                 result?.let {
-                    hMediatorLiveData.value = result
+                    hRunsMediatorLiveData.value = result
                 }
             }
         }
-        hMediatorLiveData.addSource(hRunsSortedByTimeinMillis) { result ->
+        hRunsMediatorLiveData.addSource(hRunsSortedByTimeinMillis) { result ->
             if (hSortType.equals(H_RUNNING_TIME)) {
                 result?.let {
-                    hMediatorLiveData.value = result
+                    hRunsMediatorLiveData.value = result
                 }
             }
         }
-        hMediatorLiveData.addSource(hRunsSortedByAverageSpeed) { result ->
+        hRunsMediatorLiveData.addSource(hRunsSortedByAverageSpeed) { result ->
             if (hSortType.equals(H_AVG_SPEED)) {
                 result?.let {
-                    hMediatorLiveData.value = result
+                    hRunsMediatorLiveData.value = result
                 }
             }
 
@@ -76,4 +77,30 @@ class MainViewModel @ViewModelInject constructor(
         }
     }
 
+
+    fun hChangeSortType(sortType: SortType) {
+        when (sortType) {
+            H_DISTANCE -> hRunsSortedByDistance.value?.let {
+                hRunsMediatorLiveData.value = it
+            }
+
+            H_DATE -> hRunsSortedByDate.value?.let {
+                hRunsMediatorLiveData.value = it
+            }
+
+            H_CALORIES_BURNED -> hRunsSortedByCaloriesBurnt.value?.let {
+                hRunsMediatorLiveData.value = it
+            }
+
+            H_AVG_SPEED -> hRunsSortedByAverageSpeed.value?.let {
+                hRunsMediatorLiveData.value = it
+            }
+
+            H_RUNNING_TIME -> hRunsSortedByTimeinMillis.value?.let {
+                hRunsMediatorLiveData.value = it
+            }
+        }.also {
+            hSortType = sortType
+        }
+    }
 }
