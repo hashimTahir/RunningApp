@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.hashim.runningapp.R
 import com.hashim.runningapp.ui.fragments.BaseFragment
 import com.hashim.runningapp.utils.Constants
@@ -19,10 +20,32 @@ import pub.devrel.easypermissions.EasyPermissions
 
 
 class RunFragment : BaseFragment(R.layout.fragment_run), EasyPermissions.PermissionCallbacks {
+    private lateinit var hRunAdapter: RunAdapter
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         hRequestPermissions()
         hSetupListeners()
+        hInitRecyclerView()
+        hSubscribeObservers()
+
+    }
+
+    private fun hSubscribeObservers() {
+        hMainViewModel.hRunsSortedByDate
+            .observe(
+                viewLifecycleOwner, {
+                    hRunAdapter.hSubmitList(it)
+
+                }
+            )
+    }
+
+    private fun hInitRecyclerView() {
+        rvRuns.apply {
+            hRunAdapter = RunAdapter()
+            adapter = hRunAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
     }
 
     private fun hSetupListeners() {

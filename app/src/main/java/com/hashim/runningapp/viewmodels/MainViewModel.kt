@@ -15,6 +15,8 @@ class MainViewModel @ViewModelInject constructor(
     private val hLocalRepo: LocalRepo
 ) : ViewModel() {
 
+    val hRunsSortedByDate = hLocalRepo.hGetAllRunsSortedByDate()
+
     fun hInsertRun(run: Run) {
         viewModelScope.launch {
             hLocalRepo.hInsertRun(run)
