@@ -48,6 +48,7 @@ typealias PolyLines = MutableList<PolyLine>
 @AndroidEntryPoint
 class TrackingService : LifecycleService() {
     var hIsFirstRun = true
+    var hKillService = false
 
     @Inject
     lateinit var hFusedLocationProviderClient: FusedLocationProviderClient
@@ -59,6 +60,7 @@ class TrackingService : LifecycleService() {
     lateinit var hCurrentNotification: NotificationCompat.Builder
 
     private val hRunningTimeinSecondsMLD = MutableLiveData<Long>()
+
     companion object {
         /*Observe these in the activity*/
         private val hIsTrackingUserMLD = MutableLiveData<Boolean>()
@@ -178,13 +180,24 @@ class TrackingService : LifecycleService() {
                 isAccessible = true
                 set(hCurrentNotification, ArrayList<NotificationCompat.Action>())
             }
-        hCurrentNotification = hNotificationBuilder
-            .addAction(R.drawable.ic_add_black, hNotificationText, hPendingIntent)
+        if (!hKillService) {
+            hCurrentNotification = hNotificationBuilder
+                .addAction(R.drawable.ic_add_black, hNotificationText, hPendingIntent)
 
-        hNotificationManager.notify(H_NOTIFICATION_ID, hCurrentNotification.build())
+            hNotificationManager.notify(H_NOTIFICATION_ID, hCurrentNotification.build())
+        }
+
 
     }
 
+    private fun hKillService() {
+        hKillService = true
+        hIsFirstRun = true
+        hPauseService()
+        hInitilizeMLD()
+        stopForeground(true)
+        stopSelf()
+    }
 
     /*Start or stop the location tracking*/
     @SuppressLint("MissingPermission")
@@ -226,7 +239,7 @@ class TrackingService : LifecycleService() {
             when (it.action) {
                 H_ACTION_STOP_SERVICE -> {
                     Timber.d("H_ACTION_STOP_SERVICE")
-
+                    hKillService()
                 }
                 H_ACTION_START_OR_RESUME -> {
                     Timber.d("H_ACTION_START_OR_RESUME")
@@ -276,11 +289,13 @@ class TrackingService : LifecycleService() {
             hNotificationBuilder.build()
         )
         hRunningTimeinSecondsMLD.observe(this, {
-            val hNotifcation = hCurrentNotification
-                .setContentText(TrackingUtils.hGetFormattedTime(it * 1000L))
+            if (!hKillService) {
+                val hNotifcation = hCurrentNotification
+                    .setContentText(TrackingUtils.hGetFormattedTime(it * 1000L))
 
-            Timber.d("hRunning TimeINSeconds Mld %s", it)
-            hNotificationManager.notify(H_NOTIFICATION_ID, hNotifcation.build())
+                Timber.d("hRunning TimeINSeconds Mld %s", it)
+                hNotificationManager.notify(H_NOTIFICATION_ID, hNotifcation.build())
+            }
         })
     }
 

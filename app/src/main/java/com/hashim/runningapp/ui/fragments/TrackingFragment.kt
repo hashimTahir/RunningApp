@@ -87,6 +87,7 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
     /*Turn service on and off*/
     private fun hToggleRun() {
         if (hIsTracking) {
+            hMenu?.get(0)?.isVisible = true
             hSendCommandsToServie(Constants.H_ACTION_PAUSE_SERVICE)
         } else {
             hSendCommandsToServie(Constants.H_ACTION_START_OR_RESUME)
@@ -102,6 +103,7 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
             btnFinishRun.visibility = View.VISIBLE
         } else {
             btnToggleRun.text = "Stop"
+            hMenu?.get(0)?.isVisible = true
             btnFinishRun.visibility = View.GONE
         }
 
