@@ -14,6 +14,7 @@ import androidx.core.view.get
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hashim.runningapp.R
@@ -106,6 +107,33 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
             hMenu?.get(0)?.isVisible = true
             btnFinishRun.visibility = View.GONE
         }
+
+    }
+
+    private fun hEndRunAndSaveToDb() {
+        hGoogleMap?.snapshot {
+
+        }
+
+    }
+
+    /*Zoom out so the image can be taken required for storing in db
+    * LatLang bounds does the same thing in google maps*/
+    private fun hZoomOutToTrackTheWholeRun() {
+        val hLatLngBound = LatLngBounds.builder()
+        for (polyLine in hPathPoints) {
+            for (point in polyLine) {
+                hLatLngBound.include(point)
+            }
+        }
+        hGoogleMap?.moveCamera(
+            CameraUpdateFactory.newLatLngBounds(
+                hLatLngBound.build(),
+                mapView.width,
+                mapView.height,
+                (mapView.height * 0.05F).toInt()
+            )
+        )
 
     }
 
