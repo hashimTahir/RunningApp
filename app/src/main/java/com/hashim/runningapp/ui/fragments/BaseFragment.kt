@@ -12,5 +12,5 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 open class BaseFragment(@LayoutRes layoutId: Int) : Fragment(layoutId) {
-    private val hMainViewModel: MainViewModel by viewModels()
+    protected val hMainViewModel: MainViewModel by viewModels()
 }

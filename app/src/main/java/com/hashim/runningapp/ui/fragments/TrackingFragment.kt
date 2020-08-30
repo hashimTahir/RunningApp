@@ -17,6 +17,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.hashim.runningapp.R
 import com.hashim.runningapp.db.Run
 import com.hashim.runningapp.services.PolyLine
@@ -138,6 +139,16 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
                 hCurrentTimeInMills,
                 hCaloriesBurned
             )
+            hMainViewModel.hInsertRun(hRun)
+
+            Snackbar.make(
+                requireActivity().findViewById(R.id.rootView),
+                "Run Saved Successfully",
+                Snackbar.LENGTH_LONG
+            )
+                .show()
+            hStopRun()
+
         }
 
     }
@@ -190,6 +201,10 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
     private fun hSetupListeners() {
         btnToggleRun.setOnClickListener {
             hToggleRun()
+        }
+        btnFinishRun.setOnClickListener {
+            hZoomOutToTrackTheWholeRun()
+            hEndRunAndSaveToDb()
         }
     }
 

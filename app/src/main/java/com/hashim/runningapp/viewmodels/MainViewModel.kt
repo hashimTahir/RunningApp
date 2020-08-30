@@ -6,10 +6,19 @@ package com.hashim.runningapp.viewmodels
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.hashim.runningapp.db.Run
 import com.hashim.runningapp.repository.local.LocalRepo
+import kotlinx.coroutines.launch
 
 class MainViewModel @ViewModelInject constructor(
-    val hLocalRepo: LocalRepo
+    private val hLocalRepo: LocalRepo
 ) : ViewModel() {
+
+    fun hInsertRun(run: Run) {
+        viewModelScope.launch {
+            hLocalRepo.hInsertRun(run)
+        }
+    }
 
 }
