@@ -8,6 +8,11 @@ import android.graphics.Color
 
 class Constants {
     companion object {
+        const val H_SHARED_PREFS_NAME = "hSharedPrefs"
+        const val H_FIRST_TIME = "hFirstRun"
+        const val H_KEY_NAME = "hKeyName"
+        const val H_KEY_WEIGHT = "hKeyWeight"
+
         val H_LOACTION_RC = 23
         const val hTag = "hashimTimberTags %s"
         const val H_DATABASE_NAME = "RunningDatabase"

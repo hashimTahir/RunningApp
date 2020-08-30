@@ -5,6 +5,8 @@
 package com.hashim.runningapp.di
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.hashim.runningapp.db.RunDao
 import com.hashim.runningapp.db.RunningDatabase
@@ -42,5 +44,33 @@ object AppModule {
     @Provides
     fun hProvideRunDao(database: RunningDatabase): RunDao {
         return database.hGetRunDao()
+    }
+
+    @Singleton
+    @Provides
+    fun hProvidesSharedPrefs(@ApplicationContext app: Context): SharedPreferences {
+        return app.getSharedPreferences(
+            Constants.H_SHARED_PREFS_NAME,
+            MODE_PRIVATE
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun hProvidesNamePref(sharedPreferences: SharedPreferences): String? {
+        return sharedPreferences.getString(Constants.H_KEY_NAME, "") ?: ""
+    }
+
+
+    @Singleton
+    @Provides
+    fun hProvidesWeightPref(sharedPreferences: SharedPreferences): Float {
+        return sharedPreferences.getFloat(Constants.H_KEY_WEIGHT, 80F)
+    }
+
+    @Singleton
+    @Provides
+    fun hProvidesFirstTimePref(sharedPreferences: SharedPreferences): Boolean {
+        return sharedPreferences.getBoolean(Constants.H_FIRST_TIME, true)
     }
 }
