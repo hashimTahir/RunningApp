@@ -6,7 +6,9 @@ package com.hashim.runningapp.utils
 
 import android.Manifest
 import android.content.Context
+import android.location.Location
 import android.os.Build
+import com.hashim.runningapp.services.PolyLine
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.concurrent.TimeUnit
 
@@ -51,5 +53,25 @@ object TrackingUtils {
                 "${if (hMinutes < 10) "0" else ""}$hMinutes:" +
                 "${if (hSeconds < 10) "0" else ""}$hSeconds:" +
                 "${if (hTimeInMillis < 10) "0" else ""}$hTimeInMillis"
+    }
+
+    fun hCalculatePolyLineLength(polyLine: PolyLine): Float {
+        var hDistance = 0F
+        for (i in 0..polyLine.size - 2) {
+            val hPosition1 = polyLine.get(i)
+            val hPosition2 = polyLine.get(i + 1)
+
+            /*Required by location.distance between, in it the result will be stored.*/
+            val hResult = FloatArray(1)
+            Location.distanceBetween(
+                hPosition1.latitude,
+                hPosition1.longitude,
+                hPosition2.latitude,
+                hPosition2.longitude,
+                hResult
+            )
+            hDistance += hResult[0]
+        }
+        return hDistance
     }
 }

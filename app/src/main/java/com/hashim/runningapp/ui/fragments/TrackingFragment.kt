@@ -18,11 +18,14 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hashim.runningapp.R
+import com.hashim.runningapp.db.Run
 import com.hashim.runningapp.services.PolyLine
 import com.hashim.runningapp.services.TrackingService
 import com.hashim.runningapp.utils.Constants
 import com.hashim.runningapp.utils.TrackingUtils
 import kotlinx.android.synthetic.main.fragment_tracking.*
+import java.util.*
+import kotlin.math.round
 
 
 class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
@@ -32,6 +35,7 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
     private var hCurrentTimeInMills = 0L
 
     private var hMenu: Menu? = null
+    private var hWeight = 80f
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -111,8 +115,29 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
     }
 
     private fun hEndRunAndSaveToDb() {
-        hGoogleMap?.snapshot {
+        hGoogleMap?.snapshot { hMapBitmap ->
+            var hDistanceInMeters = 0
+            for (polyline in hPathPoints) {
+                hDistanceInMeters += TrackingUtils.hCalculatePolyLineLength(
+                    polyline
+                )
+                    .toInt()
+            }
+            val hAverageSpeed = round(
+                (hDistanceInMeters / 1000F) /
+                        (hCurrentTimeInMills / 1000F / 60 / 60) * 10
+            ) / 10F
 
+            val hDateTimeStamp = Calendar.getInstance().timeInMillis
+            val hCaloriesBurned = ((hDistanceInMeters / 1000F) * hWeight).toInt()
+            val hRun = Run(
+                hMapBitmap,
+                hDateTimeStamp,
+                hAverageSpeed,
+                hDistanceInMeters,
+                hCurrentTimeInMills,
+                hCaloriesBurned
+            )
         }
 
     }
