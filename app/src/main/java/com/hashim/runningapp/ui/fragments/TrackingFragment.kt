@@ -27,6 +27,7 @@ import com.hashim.runningapp.utils.TrackingUtils
 import kotlinx.android.synthetic.main.fragment_tracking.*
 import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 import kotlin.math.round
 
 
@@ -37,6 +38,8 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
     private var hCurrentTimeInMills = 0L
 
     private var hMenu: Menu? = null
+
+    @set:Inject
     private var hWeight = 80f
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

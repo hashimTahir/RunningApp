@@ -66,7 +66,7 @@ class SetupFragment : BaseFragment(R.layout.fragment_setup) {
 
     private fun hSaveDataToPrefs(): Boolean {
         val hName = etName.text.toString()
-        val hWeight = etName.text.toString()
+        val hWeight = etWeight.text.toString()
 
         if (hName.isEmpty() || hWeight.isEmpty()) {
             return false
