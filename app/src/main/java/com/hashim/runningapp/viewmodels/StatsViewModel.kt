@@ -9,7 +9,12 @@ import androidx.lifecycle.ViewModel
 import com.hashim.runningapp.repository.local.LocalRepo
 
 class StatsViewModel @ViewModelInject constructor(
-    val hLocalRepo: LocalRepo
+    private val hLocalRepo: LocalRepo
 ) : ViewModel() {
-    
+    val hTotalRunningTimeInMillis = hLocalRepo.hGetTotalRunningTimeInMillis()
+    val hTotalDistance = hLocalRepo.hGetTotalDistance()
+    val hTotalCaloriesBurnt = hLocalRepo.hGetTotalCaloriesBurnt()
+    val hTotalRunsByAvgSpeed = hLocalRepo.hGetAverage()
+
+    val hRunsSortedByDate = hLocalRepo.hGetAllRunsSortedByDate()
 }
