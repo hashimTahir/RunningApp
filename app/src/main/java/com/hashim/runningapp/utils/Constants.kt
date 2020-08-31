@@ -8,6 +8,7 @@ import android.graphics.Color
 
 class Constants {
     companion object {
+        const val H_CANCEL_DIALOG = "hCancelDialog"
         const val H_SHARED_PREFS_NAME = "hSharedPrefs"
         const val H_FIRST_TIME = "hFirstRun"
         const val H_KEY_NAME = "hKeyName"

@@ -29,10 +29,8 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        hSetupBarChart()
         hSubscribeObservers()
-
-
+        hSetupBarChart()
     }
 
 

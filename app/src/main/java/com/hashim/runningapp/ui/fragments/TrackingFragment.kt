@@ -16,7 +16,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.hashim.runningapp.R
 import com.hashim.runningapp.db.Run
@@ -45,6 +44,16 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         hSetupListeners()
+
+        if (savedInstanceState != null) {
+            val cancelTrackingDialog =
+                parentFragmentManager.findFragmentByTag(
+                    Constants.H_CANCEL_DIALOG
+                ) as CancelTrackingDialog?
+            cancelTrackingDialog?.hSetListener {
+                hStopRun()
+            }
+        }
 
         setHasOptionsMenu(true)
 
@@ -109,10 +118,10 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
 
     private fun hUpdateTracking(isTracking: Boolean) {
         this.hIsTracking = isTracking
-        if (!isTracking) {
+        if (!isTracking && hCurrentTimeInMills > 0L) {
             btnToggleRun.text = "Start"
             btnFinishRun.visibility = View.VISIBLE
-        } else {
+        } else if (isTracking) {
             btnToggleRun.text = "Stop"
             hMenu?.get(0)?.isVisible = true
             btnFinishRun.visibility = View.GONE
@@ -275,25 +284,16 @@ class TrackingFragment : BaseFragment(R.layout.fragment_tracking) {
     }
 
     private fun hShowAlertDialog() {
-        val hDialog = MaterialAlertDialogBuilder(
-            requireContext(),
-            R.style.AlertDialogTheme
-        )
-            .setTitle("Cancel the run")
-            .setMessage("Are you sure to cancel the current run")
-            .setIcon(R.drawable.ic_delete)
-            .setPositiveButton("yes") { _, _ ->
+        CancelTrackingDialog().apply {
+            hSetListener {
                 hStopRun()
             }
-            .setNegativeButton("No") { dialoginterface, _ ->
-                dialoginterface.cancel()
-
-            }
-            .create()
-            .show()
+        }
+            .show(parentFragmentManager, Constants.H_CANCEL_DIALOG)
     }
 
     private fun hStopRun() {
+        tvTimer.text = "00:00:00"
         hSendCommandsToServie(Constants.H_ACTION_STOP_SERVICE)
         findNavController().navigate(R.id.action_hTrackingFragment_to_hRunFragment)
     }

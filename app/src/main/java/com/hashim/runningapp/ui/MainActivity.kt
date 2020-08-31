@@ -52,6 +52,9 @@ class MainActivity : AppCompatActivity() {
         hNavController = hNavHostFragment.navController
         hNavController.setGraph(R.navigation.home_nav_graph)
         NavigationUI.setupWithNavController(bottomNavigationView, hNavController)
+        bottomNavigationView.setOnNavigationItemReselectedListener {
+            /*No-Op*/
+        }
 
         hNavController.addOnDestinationChangedListener { _, destination, _ ->
 
