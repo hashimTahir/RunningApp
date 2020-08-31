@@ -15,6 +15,7 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.hashim.runningapp.R
+import com.hashim.runningapp.utils.CustomMarkerView
 import com.hashim.runningapp.utils.TrackingUtils
 import com.hashim.runningapp.viewmodels.StatsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +29,9 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        hSetupBarChart()
         hSubscribeObservers()
+
 
     }
 
@@ -104,6 +107,12 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
                             color = ContextCompat.getColor(requireContext(), R.color.colorAccent)
                         }
                     barChart.data = BarData(hBarDataSet)
+                    barChart.marker =
+                        CustomMarkerView(
+                            it.reversed(),
+                            requireContext(),
+                            R.layout.marker_view
+                        )
                     barChart.invalidate()
                 }
             }
